@@ -138,7 +138,7 @@ If using the venv created above, the plugin and server can be created with the f
 
 ```sh
 pip install deephaven-server
-pip install dist/deephaven_plugin_node_editor-0.0.1.dev0-py3-none-any.whl
+pip install dist/deephaven_plugin_node_editor-0.0.1-py3-none-any.whl
 deephaven server
 ```
 
