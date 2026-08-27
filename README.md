@@ -144,7 +144,7 @@ pip install deephaven-plugin-node-editor
 To install a specific version, pin it:
 
 ```sh
-pip install deephaven-plugin-node-editor==0.1.1
+pip install deephaven-plugin-node-editor==0.1.2
 ```
 
 The plugin needs to be installed into the same Python environment as the Deephaven server. If you
@@ -168,7 +168,7 @@ If using the venv created above, the plugin and server can be created with the f
 
 ```sh
 pip install deephaven-server
-pip install dist/deephaven_plugin_node_editor-0.1.1-py3-none-any.whl
+pip install dist/deephaven_plugin_node_editor-0.1.2-py3-none-any.whl
 deephaven server
 ```
 
