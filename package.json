@@ -1,7 +1,7 @@
 {
-  "name": "deephaven-plugin-hocon-e2e",
+  "name": "deephaven-plugin-node-editor-e2e",
   "private": true,
-  "description": "End to end tests for the HOCON editor plugin",
+  "description": "End to end tests for the node editor plugin",
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots"

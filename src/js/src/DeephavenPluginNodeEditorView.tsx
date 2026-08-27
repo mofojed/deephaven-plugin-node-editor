@@ -17,11 +17,8 @@ import {
   type NodeChange,
 } from "@xyflow/react";
 import flowStyles from "@xyflow/react/dist/style.css?inline";
-import {
-  HoconEditorContext,
-  type HoconEditorActions,
-} from "./HoconEditorContext";
-import { hoconNodeTypes } from "./HoconNodes";
+import { NodeEditorContext, type NodeEditorActions } from "./NodeEditorContext";
+import { editorNodeTypes } from "./EditorNodes";
 import {
   addChildAtPath,
   changeKindAtPath,
@@ -37,8 +34,8 @@ import {
   type NodeKind,
   type Path,
   type ValueType,
-} from "./hoconTree";
-import { jsonToGraph, type HoconNode } from "./jsonToGraph";
+} from "./editorTree";
+import { jsonToGraph, type EditorNode } from "./jsonToGraph";
 
 type Position = { x: number; y: number };
 type PositionOverrides = Record<string, Position>;
@@ -127,7 +124,7 @@ function dropOverrides(
   return next;
 }
 
-function HoconEditorFlow({
+function NodeEditorFlow({
   value,
   defaultValue,
   onChange,
@@ -161,7 +158,7 @@ function HoconEditorFlow({
     [isControlled, onChange],
   );
 
-  const actions = useMemo<HoconEditorActions>(
+  const actions = useMemo<NodeEditorActions>(
     () => ({
       setValue: (path: Path, newValue: JsonValue) => {
         commit(setAtPath(configRef.current, path, newValue));
@@ -207,7 +204,7 @@ function HoconEditorFlow({
     [config, positionOverrides],
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<HoconNode>(
+  const [nodes, setNodes, onNodesChange] = useNodesState<EditorNode>(
     graph.nodes,
   );
   const [edges, setEdges] = useEdgesState(graph.edges);
@@ -218,7 +215,7 @@ function HoconEditorFlow({
   }, [graph, setNodes, setEdges]);
 
   const handleNodesChange = useCallback(
-    (changes: NodeChange<HoconNode>[]) => {
+    (changes: NodeChange<EditorNode>[]) => {
       onNodesChange(changes);
       const moved = changes.filter(
         (change) => change.type === "position" && change.dragging === false,
@@ -246,7 +243,7 @@ function HoconEditorFlow({
       </style>
       <div style={toolbarStyle}>
         <span style={{ color: "var(--dh-color-fg-hint)" }}>
-          {isControlled ? "Controlled" : "Uncontrolled"} HOCON editor
+          {isControlled ? "Controlled" : "Uncontrolled"} node editor
         </span>
         <span style={{ flex: 1 }} />
         <button
@@ -258,11 +255,11 @@ function HoconEditorFlow({
         </button>
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>
-        <HoconEditorContext.Provider value={actions}>
+        <NodeEditorContext.Provider value={actions}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
-            nodeTypes={hoconNodeTypes}
+            nodeTypes={editorNodeTypes}
             onNodesChange={handleNodesChange}
             nodesConnectable={false}
             fitView
@@ -273,14 +270,14 @@ function HoconEditorFlow({
             <Controls showInteractive={false} />
             <MiniMap pannable zoomable />
           </ReactFlow>
-        </HoconEditorContext.Provider>
+        </NodeEditorContext.Provider>
       </div>
     </div>
   );
 }
 
 /**
- * Graphical node editor for a HOCON configuration.
+ * Graphical node editor for a configuration tree.
  *
  * Controlled when `value` is provided, uncontrolled when only `defaultValue` is.
  *
@@ -288,14 +285,14 @@ function HoconEditorFlow({
  * @param defaultValue The initial configuration for an uncontrolled editor.
  * @param onChange Called with the updated configuration after every edit.
  */
-export default function DeephavenPluginHoconView(props: {
+export default function DeephavenPluginNodeEditorView(props: {
   value?: JsonValue;
   defaultValue?: JsonValue;
   onChange?: (value: JsonValue) => void | Promise<void>;
 }): JSX.Element {
   return (
     <ReactFlowProvider>
-      <HoconEditorFlow {...props} />
+      <NodeEditorFlow {...props} />
     </ReactFlowProvider>
   );
 }

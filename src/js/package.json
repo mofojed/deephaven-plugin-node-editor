@@ -1,5 +1,5 @@
 {
-  "name": "deephaven-plugin-hocon",
+  "name": "deephaven-plugin-node-editor",
   "version": "0.0.1",
   "description": "plugin for Deephaven",
   "keywords": [

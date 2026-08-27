@@ -18,7 +18,7 @@ from deephaven.table import Table
 from pyhocon import ConfigFactory
 from pyhocon.converter import HOCONConverter
 
-from deephaven_plugin_hocon import hocon_editor
+from deephaven_plugin_node_editor import node_editor
 
 DEFAULT_CONFIG = """
 filter {
@@ -97,7 +97,7 @@ def trade_monitor_layout():
 
     return ui.row(
         ui.panel(
-            hocon_editor(value=config, on_change=set_config),
+            node_editor(value=config, on_change=set_config),
             title="Filter config",
         ),
         ui.panel(ui.table(filtered), title="Trades"),

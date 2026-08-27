@@ -5,7 +5,7 @@ const ELEMENT_PANEL =
   ".dh-panel.widget-loader-deephaven\\.ui\\.Element:visible";
 
 /** Path to a node in the editor, matching the ids React Flow renders. */
-export type HoconPath = (string | number)[];
+export type EditorPath = (string | number)[];
 
 /**
  * Go to a page and wait for the initial loading bar to disappear.
@@ -151,7 +151,7 @@ export async function openEditor(page: Page, name: string): Promise<Locator> {
  * @param panel The panel containing the editor
  * @param path The path from the root, e.g. `['db', 'host']`
  */
-export function hoconNode(panel: Locator, path: HoconPath): Locator {
+export function editorNode(panel: Locator, path: EditorPath): Locator {
   return panel.locator(`.react-flow__node[data-id='${JSON.stringify(path)}']`);
 }
 

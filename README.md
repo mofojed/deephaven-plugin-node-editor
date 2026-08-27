@@ -1,34 +1,35 @@
-# deephaven_plugin_hocon
+# deephaven_plugin_node_editor
 
-A Deephaven element plugin that edits HOCON configuration as an interactive node graph.
+A Deephaven element plugin that edits configuration data as an interactive node graph.
 
-The `hocon_editor` component renders a configuration as a graph of nodes. Objects, arrays, and
+The `node_editor` component renders a configuration as a graph of nodes. Objects, arrays, and
 scalar values each get a node, and the graph supports full structure editing: renaming keys,
 adding and deleting entries, changing value types, and converting between objects, arrays, and
 scalars. Every edit produces the updated configuration as a plain JSON-serializable dict.
 
-HOCON is parsed on the Python side with [pyhocon](https://github.com/chimpler/pyhocon), so
-substitutions and includes are resolved before the graph is built.
+Input can be a dict, a `ConfigTree`, or a HOCON string. HOCON is parsed on the Python side with
+[pyhocon](https://github.com/chimpler/pyhocon), so substitutions and includes are resolved before
+the graph is built.
 
 ## Plugin Structure
 
 The `src` directory contains the Python and JavaScript code for the plugin.  
-Within the `src` directory, the deephaven_plugin_hocon directory contains the Python code, and the `js` directory contains the JavaScript code.
+Within the `src` directory, the deephaven_plugin_node_editor directory contains the Python code, and the `js` directory contains the JavaScript code.
 
 The Python files have the following structure:  
-`hocon_editor.py` defines the `hocon_editor` component and normalizes dicts, `ConfigTree`
+`node_editor.py` defines the `node_editor` component and normalizes dicts, `ConfigTree`
 instances, and HOCON strings into plain JSON-serializable data.  
 `register.py` registers the plugin with Deephaven. This file will not need to be modified for most plugins at the initial stages, but will need to be if the package is renamed or JavaScript files are moved.
 
 The JavaScript files have the following structure:  
-`DeephavenPluginHoconPlugin.ts` registers the plugin with Deephaven and maps the
-`deephaven_plugin_hocon.hocon_editor` element name to the React view.  
-`DeephavenPluginHoconView.tsx` renders the React Flow canvas and owns the controlled and
+`DeephavenPluginNodeEditorPlugin.ts` registers the plugin with Deephaven and maps the
+`deephaven_plugin_node_editor.node_editor` element name to the React view.  
+`DeephavenPluginNodeEditorView.tsx` renders the React Flow canvas and owns the controlled and
 uncontrolled editing behavior.  
-`hoconTree.ts` holds the immutable tree model and the path-based edit operations.  
+`editorTree.ts` holds the immutable tree model and the path-based edit operations.  
 `jsonToGraph.ts` derives the nodes and edges from the configuration and lays them out with dagre.  
-`HoconNodes.tsx` defines the object, array, and value node components.  
-`HoconEditorContext.ts` passes the edit callbacks down to the node components.
+`EditorNodes.tsx` defines the object, array, and value node components.  
+`NodeEditorContext.ts` passes the edit callbacks down to the node components.
 
 ## Using plugin_builder.py
 
@@ -41,7 +42,7 @@ To build the plugin, you will need `npm` and `python` installed, as well as the 
 The script uses `watchdog` and `deephaven-server` for `--watch` mode and `--server` mode, respectively.
 
 ```sh
-cd deephaven_plugin_hocon
+cd deephaven-plugin-node-editor
 python -m venv .venv
 source .venv/bin/activate
 cd src/js
@@ -98,7 +99,7 @@ To build the plugin, you will need `npm` and `python` installed, as well as the 
 The python venv can be created and the recommended packages installed with the following commands:
 
 ```sh
-cd deephaven_plugin_hocon
+cd deephaven-plugin-node-editor
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade -r requirements.txt
@@ -137,7 +138,7 @@ If using the venv created above, the plugin and server can be created with the f
 
 ```sh
 pip install deephaven-server
-pip install dist/deephaven_plugin_hocon-0.0.1.dev0-py3-none-any.whl
+pip install dist/deephaven_plugin_node_editor-0.0.1.dev0-py3-none-any.whl
 deephaven server
 ```
 
@@ -151,9 +152,9 @@ The editor is uncontrolled when given a `default_value`. The client owns the con
 the initial render, and `on_change` is called with the updated dict after every edit.
 
 ```python
-from deephaven_plugin_hocon import hocon_editor
+from deephaven_plugin_node_editor import node_editor
 
-editor = hocon_editor(
+editor = node_editor(
     default_value={"name": "prod", "port": 8080, "db": {"host": "localhost", "ssl": True}},
     on_change=print,
 )
@@ -164,7 +165,7 @@ HOCON raises, and substitutions and includes are resolved before the graph is bu
 `mirror.port` below is `9000`.
 
 ```python
-editor = hocon_editor(default_value="app { port = 9000 }, mirror { port = ${app.port} }")
+editor = node_editor(default_value="app { port = 9000 }, mirror { port = ${app.port} }")
 ```
 
 The editor is controlled when given a `value`. The server owns the configuration, and it is up to
@@ -173,13 +174,13 @@ raises a `ValueError`.
 
 ```python
 from deephaven import ui
-from deephaven_plugin_hocon import hocon_editor
+from deephaven_plugin_node_editor import node_editor
 
 
 @ui.component
 def config_editor():
     config, set_config = ui.use_state({"name": "prod", "port": 8080})
-    return hocon_editor(value=config, on_change=set_config)
+    return node_editor(value=config, on_change=set_config)
 
 
 editor = config_editor()
@@ -207,10 +208,10 @@ Deephaven console and open the `algo_matrix` dashboard.
 The end to end tests drive a real Deephaven server with the plugin installed and assert on the
 configuration that reaches the server after each edit.
 
-`tests/hocon_editor.spec.ts` covers the editing behavior: renaming keys, adding and deleting
+`tests/node_editor.spec.ts` covers the editing behavior: renaming keys, adding and deleting
 entries, changing value types, converting between objects, arrays and scalars, and the difference
 between a controlled and an uncontrolled editor.  
-`tests/hocon_examples.spec.ts` runs the shipped examples and checks that editing the graph
+`tests/editor_examples.spec.ts` runs the shipped examples and checks that editing the graph
 re-filters and rebuilds the tables they derive.  
 `tests/app.d` is loaded by the server in application mode, so every fixture is in the Panels menu
 when the page loads.
@@ -261,7 +262,7 @@ To verify the plugin is registered, check either the console logs or the version
 
 ```{python}
 from importlib.metadata import version
-print(version("deephaven_plugin_hocon"))
+print(version("deephaven_plugin_node_editor"))
 ```
 
 ### The Panel is Appearing but with Errors or Not Functioning Correctly
@@ -287,7 +288,7 @@ python -m twine upload --repository testpypi dist/*
 Now, you can install the plugin from the test instance. The extra index is needed to find dependencies:
 
 ```sh
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ deephaven_plugin_hocon
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ deephaven_plugin_node_editor
 ```
 
 For a production release, create an account at [PyPI](https://pypi.org/account/register/).
@@ -304,7 +305,7 @@ python -m twine upload dist/*
 Now, you can install the plugin from the production instance:
 
 ```sh
-pip install deephaven_plugin_hocon
+pip install deephaven_plugin_node_editor
 ```
 
 See the [Python packaging documentation](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives) for more information.

@@ -1,5 +1,5 @@
 /**
- * Immutable tree model backing the HOCON editor.
+ * Immutable tree model backing the node editor.
  *
  * The parsed configuration is the source of truth; the graph is derived from it.
  * Nodes are addressed by their path from the root, e.g. `['servers', 0, 'port']`.

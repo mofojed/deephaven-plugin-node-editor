@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
-import type { JsonValue, NodeKind, Path, ValueType } from "./hoconTree";
+import type { JsonValue, NodeKind, Path, ValueType } from "./editorTree";
 
-export type HoconEditorActions = {
+export type NodeEditorActions = {
   setValue: (path: Path, value: JsonValue) => void;
   setValueType: (path: Path, type: ValueType) => void;
   renameKey: (path: Path, newKey: string) => void;
@@ -12,7 +12,7 @@ export type HoconEditorActions = {
 
 const noop = (): void => undefined;
 
-export const HoconEditorContext = createContext<HoconEditorActions>({
+export const NodeEditorContext = createContext<NodeEditorActions>({
   setValue: noop,
   setValueType: noop,
   renameKey: noop,
@@ -21,6 +21,6 @@ export const HoconEditorContext = createContext<HoconEditorActions>({
   deleteNode: noop,
 });
 
-export function useHoconEditor(): HoconEditorActions {
-  return useContext(HoconEditorContext);
+export function useNodeEditor(): NodeEditorActions {
+  return useContext(NodeEditorContext);
 }

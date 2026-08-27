@@ -8,13 +8,13 @@ import {
   type JsonValue,
   type NodeKind,
   type Path,
-} from "./hoconTree";
+} from "./editorTree";
 
 export const NODE_WIDTH = 240;
 const OBJECT_NODE_HEIGHT = 76;
 const VALUE_NODE_HEIGHT = 116;
 
-export type HoconNodeData = {
+export type EditorNodeData = {
   path: Path;
   label: string;
   kind: NodeKind;
@@ -25,10 +25,10 @@ export type HoconNodeData = {
   childCount: number;
 };
 
-export type HoconNode = Node<HoconNodeData>;
+export type EditorNode = Node<EditorNodeData>;
 
 export type Graph = {
-  nodes: HoconNode[];
+  nodes: EditorNode[];
   edges: Edge[];
 };
 
@@ -37,7 +37,7 @@ function nodeHeight(kind: NodeKind): number {
 }
 
 function nodeTypeFor(kind: NodeKind): string {
-  return kind === "value" ? "hoconValue" : "hoconBranch";
+  return kind === "value" ? "valueNode" : "branchNode";
 }
 
 function walk(
@@ -45,7 +45,7 @@ function walk(
   path: Path,
   label: string,
   inArray: boolean,
-  nodes: HoconNode[],
+  nodes: EditorNode[],
   edges: Edge[],
 ): void {
   const kind = getKind(value);
@@ -141,7 +141,7 @@ export function jsonToGraph(
   root: JsonValue,
   positionOverrides: Record<string, { x: number; y: number }> = {},
 ): Graph {
-  const nodes: HoconNode[] = [];
+  const nodes: EditorNode[] = [];
   const edges: Edge[] = [];
   walk(root, ROOT_PATH, "root", false, nodes, edges);
 

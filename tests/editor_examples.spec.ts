@@ -5,7 +5,7 @@ import {
   fillField,
   gotoPage,
   gridSignature,
-  hoconNode,
+  editorNode,
   openDashboard,
   waitForGridRender,
 } from "./utils";
@@ -22,26 +22,26 @@ test.describe("trade_filter example", () => {
 
     // The graph mirrors the HOCON the example starts from.
     await expect(
-      hoconNode(editor, ["filter", "min_price"]).getByLabel("Value", {
+      editorNode(editor, ["filter", "min_price"]).getByLabel("Value", {
         exact: true,
       }),
     ).toHaveValue("80");
     await expect(
-      hoconNode(editor, ["filter", "symbols", 0]).getByLabel("Value", {
+      editorNode(editor, ["filter", "symbols", 0]).getByLabel("Value", {
         exact: true,
       }),
     ).toHaveValue("AAPL");
-    await expect(hoconNode(editor, ["filter", "sides"])).toContainText(
+    await expect(editorNode(editor, ["filter", "sides"])).toContainText(
       "1 entry",
     );
     await waitForGridRender(trades);
 
     // A symbol nothing matches filters every row out.
-    await hoconNode(editor, ["filter", "symbols", 1])
+    await editorNode(editor, ["filter", "symbols", 1])
       .getByLabel("Delete", { exact: true })
       .click();
     await fillField(
-      hoconNode(editor, ["filter", "symbols", 0]),
+      editorNode(editor, ["filter", "symbols", 0]),
       "Value",
       "NOSUCH",
     );
@@ -49,7 +49,7 @@ test.describe("trade_filter example", () => {
 
     // Widening the filter brings rows back.
     await fillField(
-      hoconNode(editor, ["filter", "symbols", 0]),
+      editorNode(editor, ["filter", "symbols", 0]),
       "Value",
       "AAPL",
     );
@@ -65,7 +65,7 @@ test.describe("trade_filter example", () => {
     await waitForGridRender(trades);
 
     await fillField(
-      hoconNode(editor, ["filter", "min_price"]),
+      editorNode(editor, ["filter", "min_price"]),
       "Value",
       "100000",
     );
@@ -92,18 +92,18 @@ test.describe("algo_matrix example", () => {
     const editor = dashboardPanel(page, "Algo matrix (HOCON)");
 
     await expect(
-      hoconNode(editor, ["matrix", "name"]).getByLabel("Value", {
+      editorNode(editor, ["matrix", "name"]).getByLabel("Value", {
         exact: true,
       }),
     ).toHaveValue("SampleMatrix");
-    await expect(hoconNode(editor, ["matrix", "phases"])).toContainText(
+    await expect(editorNode(editor, ["matrix", "phases"])).toContainText(
       "2 entries",
     );
     await expect(
-      hoconNode(editor, ["matrix", "phases", 0, "nodes"]),
+      editorNode(editor, ["matrix", "phases", 0, "nodes"]),
     ).toContainText("3 entries");
     await expect(
-      hoconNode(editor, [...FIRST_TRANSITION, "signal"]).getByLabel("Value", {
+      editorNode(editor, [...FIRST_TRANSITION, "signal"]).getByLabel("Value", {
         exact: true,
       }),
     ).toHaveValue("10");
@@ -125,7 +125,7 @@ test.describe("algo_matrix example", () => {
     const before = await gridSignature(transitions);
 
     await fillField(
-      hoconNode(editor, [...FIRST_TRANSITION, "signal"]),
+      editorNode(editor, [...FIRST_TRANSITION, "signal"]),
       "Value",
       "3",
     );
@@ -145,22 +145,22 @@ test.describe("algo_matrix example", () => {
     const before = await gridSignature(nodes);
 
     const phaseNodes = ["matrix", "phases", 0, "nodes"];
-    await hoconNode(editor, phaseNodes)
+    await editorNode(editor, phaseNodes)
       .getByLabel("Add child", { exact: true })
       .click();
-    await hoconNode(editor, [...phaseNodes, 3])
+    await editorNode(editor, [...phaseNodes, 3])
       .getByLabel("Convert to object", { exact: true })
       .click();
-    await hoconNode(editor, [...phaseNodes, 3])
+    await editorNode(editor, [...phaseNodes, 3])
       .getByLabel("Add child", { exact: true })
       .click();
     await fillField(
-      hoconNode(editor, [...phaseNodes, 3, "key"]),
+      editorNode(editor, [...phaseNodes, 3, "key"]),
       "Key",
       "label",
     );
     await fillField(
-      hoconNode(editor, [...phaseNodes, 3, "label"]),
+      editorNode(editor, [...phaseNodes, 3, "label"]),
       "Value",
       "Node11",
     );
@@ -186,7 +186,7 @@ test.describe("algo_matrix example", () => {
       [1, 0],
     ]) {
       await fillField(
-        hoconNode(editor, [
+        editorNode(editor, [
           "matrix",
           "phases",
           phase,

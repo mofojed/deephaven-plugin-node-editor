@@ -1,8 +1,8 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { useHoconEditor } from "./HoconEditorContext";
-import { getValueType, type JsonValue, type ValueType } from "./hoconTree";
-import { NODE_WIDTH, type HoconNode } from "./jsonToGraph";
+import { useNodeEditor } from "./NodeEditorContext";
+import { getValueType, type JsonValue, type ValueType } from "./editorTree";
+import { NODE_WIDTH, type EditorNode } from "./jsonToGraph";
 
 const KIND_COLOR: Record<string, string> = {
   object: "var(--dh-color-visual-blue)",
@@ -128,8 +128,8 @@ function KeyField({
   return <DraftInput value={label} onCommit={onRename} ariaLabel="Key" />;
 }
 
-export function HoconBranchNode({ data }: NodeProps<HoconNode>): JSX.Element {
-  const { renameKey, addChild, deleteNode, changeKind } = useHoconEditor();
+export function BranchNode({ data }: NodeProps<EditorNode>): JSX.Element {
+  const { renameKey, addChild, deleteNode, changeKind } = useNodeEditor();
   const { path, label, kind, isRoot, inArray, childCount } = data;
 
   return (
@@ -238,9 +238,9 @@ function ValueField({
   );
 }
 
-export function HoconValueNode({ data }: NodeProps<HoconNode>): JSX.Element {
+export function ValueNode({ data }: NodeProps<EditorNode>): JSX.Element {
   const { setValue, setValueType, renameKey, changeKind, deleteNode } =
-    useHoconEditor();
+    useNodeEditor();
   const { path, label, value, isRoot, inArray } = data;
   const type = getValueType(value);
 
@@ -314,7 +314,7 @@ export function HoconValueNode({ data }: NodeProps<HoconNode>): JSX.Element {
   );
 }
 
-export const hoconNodeTypes = {
-  hoconBranch: HoconBranchNode,
-  hoconValue: HoconValueNode,
+export const editorNodeTypes = {
+  branchNode: BranchNode,
+  valueNode: ValueNode,
 };

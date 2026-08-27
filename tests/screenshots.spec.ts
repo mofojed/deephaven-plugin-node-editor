@@ -3,7 +3,7 @@ import {
   dashboardPanel,
   fillField,
   gotoPage,
-  hoconNode,
+  editorNode,
   openDashboard,
   waitForGridRender,
 } from "./utils";
@@ -54,7 +54,7 @@ test("algo matrix dashboard", async ({ page }) => {
 
   // Drop a threshold so the second phase fires too.
   await fillField(
-    hoconNode(editor, ["matrix", "phases", 1, "transitions", 0, "signal"]),
+    editorNode(editor, ["matrix", "phases", 1, "transitions", 0, "signal"]),
     "Value",
     "8",
   );
@@ -76,10 +76,10 @@ test("trade filter dashboard", async ({ page }) => {
   await waitForGridRender(trades);
 
   // Narrow the feed so the effect of the config is obvious in the image.
-  await hoconNode(editor, ["filter", "symbols", 1])
+  await editorNode(editor, ["filter", "symbols", 1])
     .getByLabel("Delete", { exact: true })
     .click();
-  await fillField(hoconNode(editor, ["filter", "min_price"]), "Value", "120");
+  await fillField(editorNode(editor, ["filter", "min_price"]), "Value", "120");
   await waitForGridRender(trades);
 
   await zoomIn(editor, 2);

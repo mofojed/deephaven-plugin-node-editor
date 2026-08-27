@@ -11,10 +11,10 @@ from pyhocon.converter import HOCONConverter
 # Sentinel so we can tell "not provided" apart from an explicitly passed `None`.
 _UNSET: Any = object()
 
-HoconValue = Any
+ConfigValue = Any
 
 
-def _normalize(value: HoconValue) -> Any:
+def _normalize(value: ConfigValue) -> Any:
     """Convert nested config data to plain JSON-serializable Python data."""
     if isinstance(value, ConfigTree):
         return json.loads(HOCONConverter.to_json(value))
@@ -25,7 +25,7 @@ def _normalize(value: HoconValue) -> Any:
     return value
 
 
-def _to_plain(value: HoconValue) -> Any:
+def _to_plain(value: ConfigValue) -> Any:
     """
     Normalize a configuration into plain JSON-serializable Python data.
 
@@ -48,13 +48,13 @@ def _to_plain(value: HoconValue) -> Any:
 
 
 @ui.component
-def hocon_editor(
-    value: HoconValue = _UNSET,
-    default_value: HoconValue = _UNSET,
+def node_editor(
+    value: ConfigValue = _UNSET,
+    default_value: ConfigValue = _UNSET,
     on_change: Callable[[dict], None] = print,
 ) -> ui.BaseElement:
     """
-    A graphical node editor for HOCON configuration.
+    A graphical node editor for configuration data.
 
     The configuration is displayed as a graph of nodes that can be rearranged and edited.
     Every edit produces the updated configuration as a plain JSON-serializable dict.
@@ -82,7 +82,7 @@ def hocon_editor(
     """
     if value is not _UNSET and default_value is not _UNSET:
         raise ValueError(
-            "hocon_editor cannot be both controlled and uncontrolled. "
+            "node_editor cannot be both controlled and uncontrolled. "
             "Provide either `value` or `default_value`, not both."
         )
 
@@ -94,5 +94,5 @@ def hocon_editor(
             {} if default_value is _UNSET else default_value
         )
 
-    # The name must match the key in the mapping in DeephavenPluginHoconPlugin.ts
-    return ui.BaseElement("deephaven_plugin_hocon.hocon_editor", **props)
+    # The name must match the key in the mapping in DeephavenPluginNodeEditorPlugin.ts
+    return ui.BaseElement("deephaven_plugin_node_editor.node_editor", **props)

@@ -23,7 +23,7 @@ from deephaven.table import Table
 from pyhocon import ConfigFactory
 from pyhocon.converter import HOCONConverter
 
-from deephaven_plugin_hocon import hocon_editor
+from deephaven_plugin_node_editor import node_editor
 
 DEFAULT_MATRIX = """
 matrix {
@@ -165,7 +165,7 @@ def algo_matrix_layout():
 
     return ui.row(
         ui.panel(
-            hocon_editor(value=config, on_change=set_config),
+            node_editor(value=config, on_change=set_config),
             title="Algo matrix (HOCON)",
         ),
         ui.column(

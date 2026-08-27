@@ -1,3 +1,3 @@
-import { DeephavenPluginHoconPlugin } from './DeephavenPluginHoconPlugin';
+import { DeephavenPluginNodeEditorPlugin } from "./DeephavenPluginNodeEditorPlugin";
 
-export default DeephavenPluginHoconPlugin;
+export default DeephavenPluginNodeEditorPlugin;
