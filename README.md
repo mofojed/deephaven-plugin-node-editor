@@ -193,6 +193,44 @@ Props are automatically converted from snake_case to camelCase, so `default_valu
 `examples/trade_filter.py` builds a dashboard where the config graph drives the filters on a live
 ticking table. Run it in a Deephaven console and open the `trade_monitor` dashboard.
 
+![trade filter](./_assets/trade_filter.png "Trade filter dashboard")
+
+`examples/algo_matrix.py` edits an algo matrix: phases holding nodes and the transitions between
+them. The graph feeds a nodes table, a transitions table, and a live feed of the transitions that
+have fired, so changing a threshold or rewiring a node immediately changes the tables. Run it in a
+Deephaven console and open the `algo_matrix` dashboard.
+
+![algo matrix](./_assets/algo_matrix.png "Algo matrix dashboard")
+
+## Testing the Plugin
+
+The end to end tests drive a real Deephaven server with the plugin installed and assert on the
+configuration that reaches the server after each edit.
+
+`tests/hocon_editor.spec.ts` covers the editing behavior: renaming keys, adding and deleting
+entries, changing value types, converting between objects, arrays and scalars, and the difference
+between a controlled and an uncontrolled editor.  
+`tests/hocon_examples.spec.ts` runs the shipped examples and checks that editing the graph
+re-filters and rebuilds the tables they derive.  
+`tests/app.d` is loaded by the server in application mode, so every fixture is in the Panels menu
+when the page loads.
+
+Install the plugin first, then run the suite. Playwright starts the server itself, so the
+virtual environment holding `deephaven-server` and the plugin must be active:
+
+```sh
+python plugin_builder.py --install --js
+npm install
+npx playwright install --with-deps chromium
+npx playwright test
+```
+
+Set `DH_PORT` to run against a different port. To regenerate the images in this README:
+
+```sh
+UPDATE_SCREENSHOTS=1 npx playwright test tests/screenshots.spec.ts
+```
+
 ## Debugging the Plugin
 
 It's recommended to run through all the steps in [Using plugin_builder.py](#Using-plugin_builder.py) and [Using the Plugin](#Using-the-plugin) to ensure the plugin is working correctly.  
