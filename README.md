@@ -131,14 +131,44 @@ rm -rf build dist
 
 ## Installing the Plugin
 
-The plugin can be installed into a Deephaven instance with `pip install <wheel file>`.
+### From PyPI
+
+The released plugin is published to PyPI as
+[deephaven-plugin-node-editor](https://pypi.org/project/deephaven-plugin-node-editor/), so the
+easiest way to install it is with `pip`:
+
+```sh
+pip install deephaven-plugin-node-editor
+```
+
+To install a specific version, pin it:
+
+```sh
+pip install deephaven-plugin-node-editor==0.1.1
+```
+
+The plugin needs to be installed into the same Python environment as the Deephaven server. If you
+are running the server from a venv, the plugin and server can be installed with the following
+commands:
+
+```sh
+pip install deephaven-server deephaven-plugin-node-editor
+deephaven server
+```
+
+If you are running Deephaven in Docker, add the package to the image or set it in the
+`START_OPTS`/requirements used to build your image.
+
+### From a local wheel
+
+A locally built plugin can be installed with `pip install <wheel file>`.
 The wheel file is stored in the `dist` directory after building the plugin.
 Exactly how this is done will depend on how you are running Deephaven.
 If using the venv created above, the plugin and server can be created with the following commands:
 
 ```sh
 pip install deephaven-server
-pip install dist/deephaven_plugin_node_editor-0.0.1-py3-none-any.whl
+pip install dist/deephaven_plugin_node_editor-0.1.1-py3-none-any.whl
 deephaven server
 ```
 
