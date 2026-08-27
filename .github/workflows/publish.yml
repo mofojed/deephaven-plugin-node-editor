@@ -1,0 +1,53 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: src/js/.nvmrc
+          cache: npm
+          cache-dependency-path: src/js/package-lock.json
+
+      # setup.py's package_js step only packs an already-built src/js/dist —
+      # it silently skips if dist is missing — so build the bundle first.
+      - name: Build JS bundle
+        working-directory: src/js
+        run: |
+          npm ci
+          npm run build
+
+      # setup-uv stopped publishing floating major tags after v7, so pin a full version.
+      - uses: astral-sh/setup-uv@v10.0.1
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Verify the JS bundle made it into the wheel
+        run: unzip -l dist/*.whl | grep -q '_js/dist/index.js'
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # required for PyPI trusted publishing (OIDC)
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
